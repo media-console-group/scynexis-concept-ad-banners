@@ -1,0 +1,518 @@
+/* ── Concept D — Corporate site / brand-native ─────────────────────
+   The advertiser's own corporate website, extended into a 300x600 ad.
+   Every source token below was read from that site's theme CSS and
+   scaled to banner size; scaffold.py fills them from brand.json → "corp"
+   (primary, secondary, grad_from, grad_to, band_to, btn_from, btn_to,
+   btn_ink, rule, page_bg, header_bg, text, btn_radius, font_head,
+   font_body, logo_w, logo_h).
+
+   Source tokens are the ONLY place colours are defined; everything else
+   derives from them (color-mix: Chrome 111+ / Safari 16.2+). To re-brand,
+   change brand.json "corp", the fonts link, and assets/logo.svg.
+
+   scynexis.com's look: deep purple (#1e0038) text and dark grounds, violet
+   (#6e13e5) buttons, lavender (#d9d4ff) circles, coral ring accents, lab
+   photography masked into circles, serif headings (Canela) over a clean
+   sans (Avenir). Canela and Avenir are not on Google Fonts, so Newsreader and
+   Figtree stand in; a side-by-side render matched their line widths.
+
+   Each slide is one homepage module, built from shared parts:
+     .m-hero   homepage hero: photo, deep-purple scrim, white copy
+     .m-split  "ground-breaking advancement" / "fungerps" split: circle photo
+               beside a lavender circle, white card, bullets
+     .m-news   "Latest news" band: deep-purple ground, concentric-rings texture
+   Parts: .d-photo, .d-stats > .d-stat (.d-value + .d-label), .d-vs,
+   .d-list (accent bullets), .d-arrows (arrow sub-bullets), .d-rule, .nw. ── */
+:root {
+  /* Source tokens — the corporate site's theme (brand.json "corp") */
+  --primary:    #1e0038;    /* headings, stat values, nav, footer strip */
+  --secondary:  #ff7b52;  /* ring accents, bullet markers, active-nav rule */
+  --grad-from:  #1e0038;  /* hero panel gradient, left */
+  --grad-to:    #3b1278;    /* hero panel gradient, right */
+  --band-to:    #3b1278;    /* overlay / alerts band gradient, bright end */
+  --btn-from:   #6e13e5;   /* .btn circle / pill (the site's violet) */
+  --btn-to:     #6e13e5;     /* .btn right stop (same violet) */
+  --page-bg:    #f8f8fd;       /* page background */
+  --header-bg:  #ffffff;     /* header bar */
+  --white:      #FFFFFF;
+  --text:       #1e0038;       /* body copy */
+  --btn-ink:    #1e0038;    /* .btn label colour */
+  --rule:       #d9d4ff;       /* the site's lavender: circle fills, hairlines */
+  --shade:      #000000;             /* photo shade, header shadow */
+  --btn-radius: 100px;
+
+  /* Derived */
+  --card-bg:     var(--white);
+  --on-dark:     var(--white);
+  --on-dark-2:   color-mix(in srgb, var(--white) 90%, transparent);
+  --hero-scrim:  linear-gradient(0deg,
+                   color-mix(in srgb, var(--primary) 96%, transparent) 0%,
+                   color-mix(in srgb, var(--primary) 90%, transparent) 46%,
+                   color-mix(in srgb, var(--primary) 0%, transparent) 84%);
+  --btn-grad:    linear-gradient(to right, var(--btn-from), var(--btn-to));
+  --hdr-shadow:  0 0 5px color-mix(in srgb, var(--shade) 30%, transparent);
+  --card-shadow: 0 1px 3px color-mix(in srgb, var(--primary) 8%, transparent);
+
+  /* Type — Google Fonts stand-ins for the site's Canela / Avenir (the link in index.html <head>) */
+  --font-head: 'Newsreader', Georgia, serif;
+  --font-body: 'Figtree', system-ui, sans-serif;
+  --ease:      cubic-bezier(0.16,1,0.3,1);
+
+  /* Geometry (fixed 300x600 stage) */
+  --gutter:    14px;
+  --hdr-h:     48px;          /* white site header */
+  --logo-w:    108px;      /* assets/logo.svg at its display size (brand.json corp.logo_w / logo_h) */
+  --logo-h:    24px;
+  --bf-pad:    9px;           /* bottom block: space above the controls row */
+  --ctrl-h:    22px;          /* dots + arrows row */
+  --bf-gap:    8px;           /* controls → CTA */
+  --cta-h:     38px;
+  --bf-gap-2:  9px;           /* CTA → footer strip */
+  --foot-h:    24px;          /* footer strip: the disclosure, up to two lines */
+  --bf-h:      calc(var(--bf-pad) + var(--ctrl-h) + var(--bf-gap) + var(--cta-h) + var(--bf-gap-2) + var(--foot-h));
+  --dot-d:     8px;           /* marker circle above stat labels (the site's circle device) */
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:300px; height:600px; overflow:hidden; background:var(--page-bg); }
+body { font-family:var(--font-body); font-weight:500; color:var(--text); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+a { text-decoration:none; color:inherit; }
+button { border:0; background:none; font:inherit; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+ul { list-style:none; }
+.nw { white-space:nowrap; }                       /* keeps hyphenated names and compounds unbroken */
+.slide p, .slide li { text-wrap:pretty; }         /* no one-word last lines */
+.slide p.d-value { text-wrap:nowrap; }            /* text-wrap:pretty resets the wrap mode, which would defeat white-space:nowrap on stat values */
+
+/* ── Canvas ───────────────────────────────────────────────────────── */
+#banner {
+  position:relative;
+  width:300px;
+  height:600px;
+  overflow:hidden;
+  cursor:pointer;
+  background:var(--page-bg);
+}
+
+/* ── Slide stack: each slide fills only the space between the header
+   and the bottom block, so slide copy can never run under the chrome. ── */
+#slides { position:absolute; inset:0; z-index:1; }
+.slide {
+  position:absolute;
+  left:0; right:0;
+  top:var(--hdr-h);
+  bottom:var(--bf-h);
+  overflow:hidden;
+  opacity:0;
+  z-index:1;
+  pointer-events:none;
+  transition:opacity 0.9s ease;
+}
+.slide.active { opacity:1; z-index:2; pointer-events:auto; }
+
+/* Content rises in on each slide change */
+.slide > :not(.d-photo):not(.rings) {
+  transform:translateY(10px);
+  transition:transform 0.9s var(--ease);
+}
+.slide.active > :not(.d-photo):not(.rings) { transform:none; }
+
+/* ── Shared parts ─────────────────────────────────────────────────── */
+/* Full-bleed photo (hero) */
+.d-photo {
+  position:absolute;
+  inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:0;
+  user-select:none;
+  -webkit-user-drag:none;
+  animation:d-zoom 9s ease-out infinite alternate;
+}
+@keyframes d-zoom { from { transform:scale(1); } to { transform:scale(1.06); } }
+
+/* Stat: serif value, circle marker, sans label */
+.d-value {
+  font-family:var(--font-head);
+  font-weight:500;
+  line-height:1.15;
+  color:var(--primary);
+  white-space:nowrap;
+}
+.d-vs { font-size:0.62em; font-weight:400; }
+.d-label {
+  font-size:10px;
+  line-height:1.45;
+  color:var(--text);
+}
+.d-label::before {                 /* the site's circle device, as the stat marker */
+  content:'';
+  display:block;
+  width:var(--dot-d);
+  height:var(--dot-d);
+  margin:7px 0 7px;
+  border-radius:50%;
+  background:var(--secondary);
+  transform:scale(0);
+  transform-origin:left center;
+  transition:transform 0.7s var(--ease) 0.35s;
+}
+.slide.active .d-label::before { transform:none; }
+
+/* Bulleted copy: coral markers, body text */
+.d-list { list-style:disc; padding-left:13px; }
+.d-list > li {
+  font-size:10.5px;
+  line-height:1.45;
+  color:var(--text);
+}
+.d-list > li::marker { color:var(--secondary); }
+/* Sub-bullets: deep-purple text, coral arrow */
+.d-arrows { list-style:none; margin-top:6px; }
+.d-arrows li {
+  position:relative;
+  padding-left:15px;
+  margin-top:4px;
+  font-size:10.5px;
+  line-height:1.4;
+  color:var(--primary);
+}
+.d-arrows li::before {             /* an arrow icon, as a mask so it takes the token colour */
+  content:'';
+  position:absolute;
+  left:0; top:2px;
+  width:10px; height:10px;
+  background:var(--secondary);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 25'%3E%3Cpath d='M12 4.18066L10.585 5.59566L16.17 11.1807H4V13.1807H16.17L10.585 18.7657L12 20.1807L20 12.1807L12 4.18066Z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 25'%3E%3Cpath d='M12 4.18066L10.585 5.59566L16.17 11.1807H4V13.1807H16.17L10.585 18.7657L12 20.1807L20 12.1807L12 4.18066Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.d-rule { border:0; border-top:1px solid var(--rule); margin:10px 0; }
+
+/* ── Module: homepage hero (.home--hero) ───────────────────────────── */
+.m-hero { background:var(--primary); }
+.m-hero .d-photo { object-position:50% 20%; }
+.m-hero::after {                   /* deep-purple scrim: the photo is already blue-toned, so it fades to the site's purple */
+  content:'';
+  position:absolute;
+  inset:0;
+  background:var(--hero-scrim);
+  z-index:1;
+}
+.hero-panel {
+  position:absolute;
+  left:var(--gutter); right:var(--gutter);
+  bottom:14px;
+  z-index:2;
+  padding:0 6px;
+}
+.hero-panel h2 {
+  font-family:var(--font-head);
+  font-weight:500;
+  font-size:22px;
+  line-height:1.15;
+  color:var(--on-dark);
+  text-wrap:balance;
+}
+.hero-desc {
+  margin-top:9px;
+  font-size:10.5px;
+  line-height:1.5;
+  color:var(--on-dark);
+}
+.m-hero .d-stats { display:flex; gap:22px; margin-top:13px; }
+.m-hero .d-stat { flex:1; }
+.m-hero .d-value { font-size:24px; color:var(--on-dark); }
+.m-hero .d-label { font-size:9.5px; color:var(--on-dark-2); }
+.m-hero .d-label::before { margin:5px 0 5px; }
+.ill {                             /* "Illustrative image" label on a photo of people */
+  position:absolute;
+  top:8px; right:8px;
+  z-index:2;
+  padding:2px 6px;
+  background:color-mix(in srgb, var(--shade) 50%, transparent);
+  font-size:7px;
+  line-height:1.2;
+  letter-spacing:0.02em;
+  color:var(--on-dark);
+}
+
+/* ── Module: image + text split (.home--copy): circle photo, white card ─ */
+.m-split {
+  display:flex;
+  flex-direction:column;
+  padding:10px var(--gutter) 12px;
+  background:var(--page-bg);
+}
+.split-fig {                       /* circle photo beside a lavender circle, as on the homepage */
+  position:relative;
+  flex:none;
+  height:176px;
+  margin:0;
+}
+.lav-circle {
+  position:absolute;
+  top:28px;
+  width:130px; height:130px;
+  border-radius:50%;
+  background:var(--rule);
+}
+.split-photo {
+  position:absolute;
+  top:0;
+  display:block;
+  width:168px; height:168px;
+  border-radius:50%;
+  object-fit:cover;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.fig-right .split-photo { right:12px; }
+.fig-right .lav-circle  { left:10px; }
+.fig-left  .split-photo { left:12px; }
+.fig-left  .lav-circle  { right:10px; }
+.split-fig figcaption {
+  position:absolute;
+  bottom:3px;
+  padding:2px 6px;
+  background:color-mix(in srgb, var(--shade) 55%, transparent);
+  font-size:7px;
+  line-height:1.2;
+  letter-spacing:0.02em;
+  color:var(--on-dark);
+}
+.fig-right figcaption { right:26px; }
+.fig-left  figcaption { left:26px; }
+.split-card {
+  flex:1;
+  padding:13px 16px 10px;
+  background:var(--card-bg);
+  box-shadow:var(--card-shadow);
+}
+.split-kicker {                    /* the site's tracked-uppercase h3 label */
+  font-weight:600;
+  font-size:7.8px;
+  line-height:1.3;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--primary);
+  margin-bottom:5px;
+}
+.split-card h2 {
+  font-family:var(--font-head);
+  font-weight:500;
+  font-size:17.5px;
+  line-height:1.2;
+  color:var(--primary);
+}
+.split-card h2::after {            /* the site's circle pattern in miniature: violet dot + coral ring */
+  content:'';
+  display:block;
+  width:24px; height:9px;
+  margin:8px 0 9px;
+  background:
+    radial-gradient(circle at 15px 4.5px, transparent 2.6px, var(--secondary) 3px, var(--secondary) 4.2px, transparent 4.6px),
+    radial-gradient(circle at 4.5px 4.5px, var(--btn-from) 4.2px, transparent 4.6px);
+}
+
+/* ── Module: "Latest news" band (.news--slider): deep-purple ground + rings ─ */
+.m-news { background:var(--primary); }
+.m-news .rings {                   /* the site's own concentric-rings texture */
+  position:absolute;
+  width:520px; height:auto;
+  right:-250px; top:-120px;
+  opacity:0.9;
+  z-index:0;
+  pointer-events:none;
+  user-select:none;
+}
+.band-content {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:0 14px;
+  text-align:center;
+}
+.band-content h2 {
+  font-family:var(--font-head);
+  font-weight:500;
+  font-size:22px;
+  line-height:1.15;
+  color:var(--on-dark);
+  text-wrap:balance;
+}
+.band-desc {
+  margin-top:11px;
+  font-size:10.5px;
+  line-height:1.5;
+  color:var(--on-dark);
+}
+.m-news .d-stats {
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:6px;
+  margin-top:24px;
+}
+.m-news .d-value { font-size:21px; color:var(--on-dark); }
+.m-news .d-label { font-size:9px; color:var(--on-dark-2); }
+.m-news .d-label::before { margin-left:auto; margin-right:auto; transform-origin:center; }
+
+/* ── Persistent chrome (never rotates) ─────────────────────────────── */
+#top-bar {                         /* #header — white bar, soft shadow */
+  position:absolute;
+  top:0; left:0; right:0;
+  height:var(--hdr-h);
+  z-index:6;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 var(--gutter);
+  background:var(--header-bg);
+  box-shadow:var(--hdr-shadow);
+}
+#logo { display:block; width:var(--logo-w); height:var(--logo-h); }
+#ticker {                          /* set as the active main-menu item */
+  position:relative;
+  padding-bottom:5px;
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:9.5px;
+  letter-spacing:0.02em;
+  color:var(--primary);
+}
+#ticker::after {                   /* active-menu rule in the coral ring colour */
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:2px;
+  background:var(--secondary);
+}
+
+#bottom-fixed {
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:var(--bf-h);
+  z-index:5;
+  padding-top:var(--bf-pad);
+  background:var(--white);
+  box-shadow:0 -1px 0 var(--rule);
+}
+
+/* Slider dots: rings, filled when active */
+#dots {
+  display:flex;
+  align-items:center;
+  gap:2px;
+  height:var(--ctrl-h);
+  margin:0 0 var(--bf-gap) calc(var(--gutter) - 4px);
+}
+.dot { position:relative; width:18px; height:18px; }
+.dot::before {
+  content:'';
+  position:absolute;
+  inset:4px;
+  border:1px solid var(--primary);
+  border-radius:50%;
+  background-color:transparent;
+  transition:background-color .3s ease;
+}
+.dot.active::before { background-color:var(--primary); }
+
+.nav-arrow {                       /* round control */
+  position:absolute;
+  z-index:6;
+  bottom:calc(var(--foot-h) + var(--bf-gap-2) + var(--cta-h) + var(--bf-gap));
+  width:var(--ctrl-h);
+  height:var(--ctrl-h);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:var(--primary);
+  color:var(--on-dark);
+  transition:background-color .2s ease, transform .15s ease;
+}
+.nav-arrow svg { width:11px; height:11px; }
+.nav-arrow:hover { background:var(--btn-from); }
+.nav-arrow:active { transform:scale(0.9); }
+#arrow-next { right:var(--gutter); }
+#arrow-prev { right:calc(var(--gutter) + var(--ctrl-h) + 6px); }
+
+/* CTA — the site's .btn: uppercase label over the violet circle that grows into a pill.
+   On load the circle expands once (the site does it on hover); at rest it is the full pill. */
+#cta {
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  height:var(--cta-h);
+  margin:0 var(--gutter) var(--bf-gap-2);
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:11.5px;
+  letter-spacing:0.08em;
+  line-height:1;
+  text-transform:uppercase;
+  color:var(--on-dark);
+}
+#cta::before {
+  content:'';
+  position:absolute;
+  z-index:-1;
+  left:0; top:0;
+  width:100%; height:100%;
+  border-radius:var(--btn-radius);
+  background:var(--btn-from);
+  transition:background-color .2s ease;
+  animation:d-pill 1.1s var(--ease) 0.6s backwards;
+}
+@keyframes d-pill { from { width:var(--cta-h); } to { width:100%; } }
+#cta span { animation:d-fade .6s ease 1s backwards; }
+@keyframes d-fade { from { opacity:0; } to { opacity:1; } }
+#cta-arrow {
+  width:16px; height:16px;
+  fill:var(--on-dark);
+  animation:d-nudge 1.4s ease-in-out 2.6s 4, d-fade .6s ease 1s backwards;
+}
+/* .btn:hover — the pill deepens to the site's dark purple; whole-banner hover signals the click */
+#banner:hover #cta::before, #cta:hover::before, #cta:focus-visible::before { background:var(--primary); }
+@keyframes d-nudge { 0%, 100% { transform:translateX(0); } 50% { transform:translateX(3px); } }
+
+/* Required disclosure — set in the site's footer strip. Two lines fit; it names
+   what the slides actually forward-look about rather than a generic line. */
+#fls {
+  height:var(--foot-h);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 9px;
+  background:var(--primary);
+  font-size:7.5px;
+  line-height:9.5px;
+  text-align:center;
+  text-wrap:balance;
+  overflow:hidden;
+  color:var(--on-dark-2);
+}
+
+/* ── Entrance sequence (initial load only) ─────────────────────────── */
+.reveal {
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .7s var(--ease), transform .7s var(--ease);
+}
+#top-bar.reveal { transform:translateY(-8px); }
+#banner.is-live .reveal { opacity:1; transform:none; }
+#top-bar[data-delay="0"] { transition-delay:.05s; }
+#bottom-fixed[data-delay="4"] { transition-delay:.45s; }
+
+#click-tag-wrapper { position:absolute; width:0; height:0; overflow:hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .d-photo, #cta-arrow, #cta::before, #cta span { animation:none; }
+  .reveal { transition-duration:.01s; transition-delay:0s !important; }
+  .slide, .slide > *, .d-label::before { transition-duration:.2s; transition-delay:0s; }
+}

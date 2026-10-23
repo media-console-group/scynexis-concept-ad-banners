@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="ad.size" content="width=300,height=600">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport" content="width=300,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>SCYNEXIS, Inc. — Investor Relations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!--
+  SCYNEXIS, Inc. — IR display banner, 300x600 — Concept D: Corporate site / brand-native.
+  Promotes: https://scynexis-ir-concept.netlify.app/
+  Styled from the company's own CORPORATE website (https://www.scynexis.com/), not the IR
+  landing page that Concepts A-C are built from: its logo lockup, lab photography,
+  circle-and-ring imagery, deep-purple/violet palette and circle-to-pill button.
+  "Homepage in miniature": each slide is one module of scynexis.com's homepage:
+    1 hero -> 2 "A ground-breaking advancement" split -> 3 "Fungerps" split -> 4 "Latest news" band.
+  Module classes (m-hero / m-split / m-news) and the shared parts (d-stat, d-list,
+  d-arrows) live in style.css; every colour is a :root token filled from brand.json "corp".
+  Photos are the site's own photography, cropped into assets/; assets/logo.svg is the
+  site's own wordmark recoloured to its deep purple. Fonts: the site uses Canela and Avenir
+  (not on Google Fonts), so Newsreader and Figtree stand in at matching widths.
+  Every claim comes from the project fact sheet (.tmp/facts.md).
+-->
+
+<div id="banner" aria-label="SCYNEXIS, Inc. investor relations advertisement">
+
+  <div id="slides">
+
+    <!-- Slide 1 — Overview -->
+    <section class="slide m-hero" data-index="0">
+      <!-- Module: corporate homepage hero (.home--hero): the blue-toned laboratory photo, white serif title
+           and body copy over it. Facts: [HOME] tagline; [PR372] BARDA contract up to ~$214M if all options
+           are exercised, SCY-247; [PR366][PR372] cash runway expected into 2029. -->
+      <img class="d-photo" src="assets/slide-1.jpg" alt="Illustrative image: scientists working in a laboratory">
+      <span class="ill">Illustrative image</span>
+      <div class="hero-panel">
+        <h2>Advancing innovative solutions for severe rare diseases</h2>
+        <p class="hero-desc">A clinical-stage biotechnology company with two investigational programs: <span class="nw">SCY-770</span> for ADPKD and <span class="nw">SCY-247</span>, an antifungal now supported by a BARDA contract.</p>
+        <div class="d-stats">
+          <div class="d-stat">
+            <p class="d-value">$214M</p>
+            <p class="d-label">Potential BARDA funding if all options are exercised</p>
+          </div>
+          <div class="d-stat">
+            <p class="d-value">2029</p>
+            <p class="d-label">Expected cash runway</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2 — SCY-770 -->
+    <section class="slide m-split" data-index="1">
+      <!-- Module: corporate homepage AMPK split (.home--copy--left): tracked label, serif h2, body copy, the
+           circle-masked laboratory photo beside a lavender circle. The homepage's own label and h2 ("A ground-breaking
+           advancement", "significant therapeutic opportunities") are promotional for an investigational drug, so the
+           copy here comes from the press releases instead.
+           Facts: [PR372] SCY-770 is the lead product candidate for ADPKD; [PR366] oral direct AMPK activator,
+           ~140,000 diagnosed U.S. patients, Orphan Drug Designation, Phase 2 proof-of-concept on track for Q4 2026. -->
+      <figure class="split-fig fig-right">
+        <span class="lav-circle" aria-hidden="true"></span>
+        <img class="split-photo" src="assets/slide-2.jpg" alt="Illustrative image: scientist using a microscope">
+        <figcaption>Illustrative image</figcaption>
+      </figure>
+      <div class="split-card">
+        <p class="split-kicker">Lead program · SCY-770</p>
+        <h2>A direct AMPK activator for ADPKD</h2>
+        <ul class="d-list">
+          <li>An investigational, oral therapy in development for autosomal dominant polycystic kidney disease (ADPKD), a progressive genetic kidney disorder.
+            <ul class="d-arrows">
+              <li>About 140,000 diagnosed U.S. patients</li>
+              <li>FDA Orphan Drug Designation</li>
+              <li>Phase 2 proof-of-concept planned to start in Q4&nbsp;2026</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slide 3 — SCY-247 -->
+    <section class="slide m-split" data-index="2">
+      <!-- Module: corporate homepage "Fungerps: our anti-fungal platform" split (.home--copy--right): tracked label,
+           serif h2, body copy, the circle-masked photo with its coral ring beside a lavender circle.
+           Facts: [HOME] fungerp label; [PR372] SCY-247 second-generation fungerp, oral and IV, Orphan/QIDP/Fast Track
+           granted, IV Phase 1 dosing complete (analysis ongoing), BARDA up to ~$214M if all options are exercised. -->
+      <figure class="split-fig fig-left">
+        <span class="lav-circle" aria-hidden="true"></span>
+        <img class="split-photo" src="assets/slide-3.jpg" alt="Illustrative image: scientist pipetting in a laboratory">
+        <figcaption>Illustrative image</figcaption>
+      </figure>
+      <div class="split-card">
+        <p class="split-kicker">Fungerps: our anti-fungal platform</p>
+        <h2><span class="nw">SCY-247</span>, our second-generation fungerp</h2>
+        <ul class="d-list">
+          <li>An investigational oral and IV antifungal for invasive candidiasis and prevention of invasive fungal infections.
+            <ul class="d-arrows">
+              <li>Orphan, QIDP and Fast Track designations</li>
+              <li>IV Phase 1 dosing complete; analysis ongoing</li>
+              <li>BARDA: up to ~$214M if all options are exercised</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slide 4 — What's next + balance sheet -->
+    <section class="slide m-news" data-index="3">
+      <!-- Module: corporate homepage "Latest news" band (.news--slider): the deep-purple ground with the site's own
+           concentric-rings texture and a white serif title.
+           Facts: [PR366] $71.1M cash, cash equivalents and investments at Jun 30 2026, runway into 2029, SCY-770
+           Phase 2 on track for Q4 2026; [PR372] ~$18.5M BARDA initial base period, no change to SCY-770 guidance
+           or runway. -->
+      <img class="rings" src="assets/rings.png" alt="" aria-hidden="true">
+      <div class="band-content">
+        <h2>Two programs moving toward Phase&nbsp;2</h2>
+        <p class="band-desc">Cash is expected to fund operations into 2029. The BARDA contract is not expected to change <span class="nw">SCY-770</span> plans or that runway.</p>
+        <div class="d-stats">
+          <div class="d-stat">
+            <p class="d-value">$71.1M</p>
+            <p class="d-label">Cash &amp; investments, 6/30/26</p>
+          </div>
+          <div class="d-stat">
+            <p class="d-value">~$18.5M</p>
+            <p class="d-label">BARDA initial base period</p>
+          </div>
+          <div class="d-stat">
+            <p class="d-value">Q4 2026</p>
+            <p class="d-label"><span class="nw">SCY-770</span> Phase 2 planned</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Persistent chrome — the corporate site's header, never rotates -->
+  <header id="top-bar" class="reveal" data-delay="0">
+    <img id="logo" src="assets/logo.svg" alt="SCYNEXIS, Inc." width="108" height="24">
+    <span id="ticker">NASDAQ:&nbsp;SCYX</span>
+  </header>
+
+  <!-- Slider controls: round deep-purple buttons -->
+  <button type="button" class="nav-arrow" id="arrow-prev" aria-label="Previous slide">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 6 8l4 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button type="button" class="nav-arrow" id="arrow-next" aria-label="Next slide">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l4 5-4 5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div id="bottom-fixed" class="reveal" data-delay="4">
+    <div id="dots" role="tablist" aria-label="Slide selector">
+      <button class="dot active" data-index="0" aria-label="Slide 1: Overview"></button>
+      <button class="dot" data-index="1" aria-label="Slide 2: SCY-770"></button>
+      <button class="dot" data-index="2" aria-label="Slide 3: SCY-247"></button>
+      <button class="dot" data-index="3" aria-label="Slide 4: Phase 2 plans and cash runway"></button>
+    </div>
+
+    <!-- The corporate site's .btn: uppercase label, the circle that grows into a pill -->
+    <a href="#" id="cta">
+      <span>Investors</span>
+      <svg id="cta-arrow" viewBox="0 0 24 25" aria-hidden="true"><path d="M12 4.18066L10.585 5.59566L16.17 11.1807H4V13.1807H16.17L10.585 18.7657L12 20.1807L20 12.1807L12 4.18066Z"/></svg>
+    </a>
+
+    <!-- The corporate site's footer strip, carrying the required forward-looking-statements line -->
+    <p id="fls">Forward-looking statements on BARDA options, trial timing and cash runway. SCY-770 and SCY-247 are investigational, not FDA-approved. See SEC filings.</p>
+  </div>
+
+  <!-- Standard HTML5-ad click-tag plumbing -->
+  <div id="click-tag-wrapper"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
